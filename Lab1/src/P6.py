@@ -1,3 +1,19 @@
+"""
+Explorer Robot Simulation
+
+This program simulates a robot navigating through a randomly generated grid 
+with obstacles. The robot starts at (0,0) and attempts to reach the bottom-right 
+corner. It can only move forward, turn left, or turn right.
+
+If the robot finds a way, the program displays:
+1. The original grid with obstacles.
+2. The path the robot followed using arrows.
+
+If no path is found, it prints: "Impossible to reach the destination."
+
+Author: Nydia Hernández Bravo
+"""
+
 import random
 
 class ExplorerRobot:
