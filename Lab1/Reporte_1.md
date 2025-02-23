@@ -139,4 +139,58 @@ Embracing these OOP principles allows for the creation of modular, reusable, and
 1. Python Introduction. (n.d.). GeeksforGeeks. Retrieved October 1, 2023, from https://www.geeksforgeeks.org/introduction-to-python/
 2. Python Data Types. (n.d.). GeeksforGeeks. Retrieved October 1, 2023, from https://www.geeksforgeeks.org/python-data-types/
 3. Python Basics: Syntax, Data Types, and Control Structures. (2023, September 2). KDnuggets. https://www.kdnuggets.com/python-basics-syntax-data-types-and-control-structures
-4. Object-Oriented Programming (OOP) in Python. (n.d.). Real Python. Retrieved October 1, 2023, from https://realpython.com/python3-object-oriented-programming/ 
+4. Object-Oriented Programming (OOP) in Python. (n.d.). Real Python. Retrieved October 1, 2023, from https://realpython.com/python3-object-oriented-programming/
+
+## Solved Problems
+
+#### Problem 1: Sum of Positive Integers
+
+Write a program that reads a positive integer "n" entered by the user and then displays  
+the sum of all integers from 1 to n.
+
+The sum of the first n positive integers can be calculated as follows:
+
+S = n(n + 1) / 2
+
+##### Solution
+
+The solution implemented was:
+
+```python
+# Ask the user for a positive integer
+n = int(input("Enter an integer: "))
+
+# Check if the number is positive
+if n > 0:
+    # Calculate the sum using the mathematical formula
+    sum_n = (n * (n + 1)) / 2  
+    print(f"The sum of the first {n} integers is: {sum_n}")
+else:
+    print("Please enter a positive integer.")
+```
+
+This program calculates the sum of the first **n** positive integers using a simple formula. It first asks the user to enter a positive number and checks if the input is valid. If the number is positive, it applies the formula S = n(n + 1) / 2 to quickly compute the sum without using loops.
+
+If the user enters a non-positive number, the program displays a message asking for a valid input. 
+
+## Problem 2: Salary Calculation
+
+Write a program that asks the user for the number of hours worked and the hourly wage. Then, display the corresponding payment on the screen.
+
+##### Solution
+
+The solution implemented was:
+
+```python
+# Ask the user for the number of hours worked and the hourly rate
+hoursWorked = float(input("Enter the number of hours worked: "))
+hourlyRate = float(input("Enter the hourly rate: "))
+
+# Calculate the payment
+payment = hoursWorked * hourlyRate
+
+# Display the result
+print(f"The payment for {hoursWorked} hours worked at a rate of {hourlyRate} per hour is: ${payment}")
+```
+
+The program calculates the total payment by multiplying the hours worked by the hourly rate. It takes user input for both values, converts them to `float`, and performs the calculation. The result is then displayed using an `f-string`, showing the hours, rate, and total payment in a clear format.
