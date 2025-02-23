@@ -259,7 +259,7 @@ print(f"Product of odd numbers: {productOdd}")
 
 The program creates a list of 10 numbers and separates them into even and odd numbers using list comprehensions. It then calculates the average of even numbers by dividing their sum by the count, ensuring it doesn't divide by zero. The product of odd numbers is found by multiplying all values in the list. Finally, both results are printed with the average formatted to two decimal places.
 
-## Problem 5: Guess the Secret Number
+### Problem 5: Guess the Secret Number
 
 Create a program that asks the user to guess a secret number.  
 
@@ -304,10 +304,169 @@ The program checks if the guessed number is too low, too high, or correct:
 - If the guess is higher, it prints "Too high! Try again."
 - If the guess is correct, it prints a congratulatory message along with the number of attempts, then exits the loop using `break`.
 
+### Problem 6: Explorer Robot
+
+Create a program that generates a matrix of at least 5x5.  
+
+- The robot starts at position (0,0) and must reach position (4,4) or the maximum position if the matrix size changes.  
+- The number and position of obstacles are random.  
+- The robot can only move forward, turn left, or turn right to find a free path.  
+- If the robot cannot reach the destination, print "Impossible to reach the destination."  
+- If the robot reaches the final position, print a map where:  
+  - X represents an obstacle.  
+  - o represents a free space.  
+
+Example Output
+```
+o o o X o
+o o o o o
+o o o o X
+o o o o o
+o X X X o
+```
+
+- The program must also print a second map showing the path taken by the robot, using arrows:  
+
+  - ↑ (U+2191) for up  
+  - ↓ (U+2193) for down  
+  - ← (U+2190) for left  
+  - → (U+2192) for right  
 
 #### Soution
-The implemented solution was:
+The implemented solution can be seen in: [View the code](./src/P6.py)
+
+
+This program simulates a robot navigating through a grid while avoiding obstacles. The robot starts at (0,0) and attempts to reach (size-1, size-1). It can move forward, turn left, or turn right. If it cannot find a path, the program prints "Impossible to reach the destination."
+
+**1. Initializing the Robot**
+```python
+class ExplorerRobot:
+    def __init__(self, size=5):
+        self.size = size
+        self.grid = [['o' for _ in range(size)] for _ in range(size)]
+        self.robotPos = (0, 0)
+        self.directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
+        self.directionIndex = 0  # Initially facing right
+        self.path = {}
+```
+- Creates a grid filled with `'o'` (open spaces).  
+- The robot starts at (0,0) and initially faces right.  
+- Defines movement directions (right, down, left, up).  
+
+**2. Generating a Path**
+```python
+def generatePath(self):
+    x, y = 0, 0
+    while (x, y) != (self.size - 1, self.size - 1):
+        self.grid[x][y] = 'o'
+        if x < self.size - 1 and random.choice([True, False]):  
+            x += 1  
+        elif y < self.size - 1:
+            y += 1  
+    self.grid[x][y] = 'o'
+```
+- Creates a guaranteed path from the start to the exit.  
+- Moves randomly right or down to ensure connectivity.  
+
+**3. Placing Obstacles**
+```python
+def placeObstacles(self, numObstacles=None):
+    self.generatePath()
+    numObstacles = numObstacles if numObstacles is not None else self.size
+    placed = 0
+    while placed < numObstacles:
+        x, y = random.randint(0, self.size - 1), random.randint(0, self.size - 1)
+        if self.grid[x][y] == 'o' and (x, y) not in [(0, 0), (self.size-1, self.size-1)]:
+            self.grid[x][y] = 'X'
+            placed += 1
+```
+- Randomly places obstacles (`'X'`) without covering the start or exit.  
+
+**4. Moving the Robot**
+```python
+def move(self):
+    dx, dy = self.directions[self.directionIndex]
+    new_x, new_y = self.robotPos[0] + dx, self.robotPos[1] + dy
+    if 0 <= new_x < self.size and 0 <= new_y < self.size and self.grid[new_x][new_y] == 'o':
+        self.robotPos = (new_x, new_y)
+        self.path[self.robotPos] = self.getArrow()
+        return True
+    return False
+```
+- Moves forward if the path is open.  
+- Updates position and records movement direction.  
+
+**5. Turning Left or Right**
+```python
+def turnLeft(self):
+    self.directionIndex = (self.directionIndex - 1) % 4
+
+def turnRight(self):
+    self.directionIndex = (self.directionIndex + 1) % 4
+```
+- Left turn: Moves counterclockwise.  
+- Right turn: Moves clockwise.  
+
+**6. Exploring the Grid**
+```python
+def explore(self):
+    attempts = 0
+    while self.robotPos != (self.size-1, self.size-1):
+        if self.move():
+            continue
+        self.turnRight()
+        attempts += 1
+        if attempts > 4:
+            print("Impossible to reach the destination.")
+            return False
+    return True
+```
+- Moves until reaching the exit.  
+- Turns right if blocked, trying all directions.  
+- If no moves are possible, prints failure message.  
+
+**7. Printing the Grid and Path**
+```python
+def printGrid(self):
+    for i in range(self.size):
+        for j in range(self.size):
+            print(self.grid[i][j], end=' ')
+        print()
+    print()
+```
+- Displays the grid with obstacles.
 
 ```python
-
+def printPath(self):
+    for i in range(self.size):
+        for j in range(self.size):
+            if (i, j) == (0, 0):
+                print("S", end=" ")
+            elif (i, j) == (self.size-1, self.size-1):
+                print("E", end=" ")
+            elif (i, j) in self.path:
+                print(self.path[(i, j)], end=" ")
+            else:
+                print(self.grid[i][j], end=" ")
+        print()
+    print()
 ```
+- Displays the path followed by the robot**, using:  
+  - `S` for start position  
+  - `E` for exit position  
+  - `→ ↓ ← ↑` for robot movements  
+
+**8. Running the Simulation**
+```python
+robot = ExplorerRobot(size=5)
+robot.placeObstacles()
+print("Initial Grid:")
+robot.printGrid()
+
+if robot.explore():
+    print("Path Followed:")
+    robot.printPath()
+```
+- Creates a 5x5 grid with obstacles.  
+- Attempts to find a path and prints the results.  
+
