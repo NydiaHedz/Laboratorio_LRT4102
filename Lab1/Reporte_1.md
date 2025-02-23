@@ -143,7 +143,7 @@ Embracing these OOP principles allows for the creation of modular, reusable, and
 
 ## Solved Problems
 
-#### Problem 1: Sum of Positive Integers
+### Problem 1: Sum of Positive Integers
 
 Write a program that reads a positive integer "n" entered by the user and then displays  
 the sum of all integers from 1 to n.
@@ -152,9 +152,8 @@ The sum of the first n positive integers can be calculated as follows:
 
 S = n(n + 1) / 2
 
-##### Solution
-
-The solution implemented was:
+#### Solution
+The implemented solution was:
 
 ```python
 # Ask the user for a positive integer
@@ -173,13 +172,12 @@ This program calculates the sum of the first **n** positive integers using a sim
 
 If the user enters a non-positive number, the program displays a message asking for a valid input. 
 
-## Problem 2: Salary Calculation
+### Problem 2: Salary Calculation
 
 Write a program that asks the user for the number of hours worked and the hourly wage. Then, display the corresponding payment on the screen.
 
-##### Solution
-
-The solution implemented was:
+#### Solution
+The implemented solution was:
 
 ```python
 # Ask the user for the number of hours worked and the hourly rate
@@ -194,3 +192,122 @@ print(f"The payment for {hoursWorked} hours worked at a rate of {hourlyRate} per
 ```
 
 The program calculates the total payment by multiplying the hours worked by the hourly rate. It takes user input for both values, converts them to `float`, and performs the calculation. The result is then displayed using an `f-string`, showing the hours, rate, and total payment in a clear format.
+
+### Problem 3: Payroll Calculation for Multiple Operators
+
+Create a list with at least six operators, each containing:
+- Name  
+- Hourly wage  
+- Hours worked  
+
+The program should calculate and print the total payment for each operator.
+
+#### Soution
+The implemented solution was:
+
+```python
+# List of operators with (Name, Hourly Wage, Hours Worked)
+operatorList = [
+    ("Joan", 15, 40),
+    ("Miguel", 18.0, 35),
+    ("Pablo", 20.0, 42),
+    ("Emilio", 17.5, 38),
+    ("Jesus", 16.0, 45),
+    ("Valeria", 29.0, 37)
+]
+
+# Iterate through the list and calculate the total payment for each operator
+for name, hourlyWage, hoursWorked in operatorList:
+    totalPay = hourlyWage * hoursWorked
+    print(f"{name} will be paid: ${totalPay:.2f}")
+```
+
+The program stores a list of six operators, where each entry contains a name, hourly wage, and hours worked. It then iterates through the list, calculating the total payment for each operator using: Total Payment = Hourly Wage * Hours Worked
+
+Each operator’s payment is printed using an `f-string`, ensuring the output is formatted to two decimal places for clarity.
+
+### Problem 4: List Operations
+
+- Create a list called `numbers` containing at least 10 numbers.  
+- Calculate the average of the even numbers.  
+- Calculate the product of the odd numbers.  
+- Print the results.
+
+#### Soution
+The implemented solution was:
+
+```python
+# Create a list with at least 10 numbers
+numeros = [19, 20, 15, 22, 9, 10, 5, 18, 11, 6]
+
+# Separate even and odd numbers
+evenNumbers = [num for num in numeros if num % 2 == 0]
+oddNumbers = [num for num in numeros if num % 2 != 0]
+
+# Calculate the average of even numbers
+averageEven = sum(evenNumbers) / len(evenNumbers) if evenNumbers else 0
+
+# Calculate the product of odd numbers
+productOdd = 1
+for num in oddNumbers:
+    productOdd *= num
+
+# Print the results
+print(f"Average of even numbers: {averageEven:.2f}")
+print(f"Product of odd numbers: {productOdd}")
+```
+
+The program creates a list of 10 numbers and separates them into even and odd numbers using list comprehensions. It then calculates the average of even numbers by dividing their sum by the count, ensuring it doesn't divide by zero. The product of odd numbers is found by multiplying all values in the list. Finally, both results are printed with the average formatted to two decimal places.
+
+## Problem 5: Guess the Secret Number
+
+Create a program that asks the user to guess a secret number.  
+
+- The program should generate a random number between 1 and 10.  
+- The user must keep guessing until they find the correct number.  
+- The program should provide hints if the guessed number is too high or too low.  
+- The `while` loop should continue until the user guesses correctly.  
+- At the end, print the number of attempts it took to guess the number.  
+
+#### Soution
+The implemented solution was:
+
+```python
+import random
+
+# Generate a random number between 1 and 10
+secretNumber = random.randint(1, 10)
+
+# Initialize the attempt counter
+attempts = 0
+
+# Loop until the user guesses correctly
+while True:
+    # Get user's guess
+    userGuess = int(input("Guess a number between 1 and 10: "))
+    attempts += 1
+
+    # Check the guess
+    if userGuess < secretNumber:
+        print("Too low! Try again.")
+    elif userGuess > secretNumber:
+        print("Too high! Try again.")
+    else:
+        print(f"Congratulations! You guessed the number after {attempts} attempts.")
+        break
+```
+
+The program generates a random number between 1 and 10 using `random.randint(1, 10)`. It then enters a `while True` loop, continuously asking the user to guess the number. Each guess increases the attempt counter.
+
+The program checks if the guessed number is too low, too high, or correct:
+- If the guess is lower than the secret number, it prints "Too low! Try again."
+- If the guess is higher, it prints "Too high! Try again."
+- If the guess is correct, it prints a congratulatory message along with the number of attempts, then exits the loop using `break`.
+
+
+#### Soution
+The implemented solution was:
+
+```python
+
+```
