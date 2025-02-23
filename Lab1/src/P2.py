@@ -15,4 +15,4 @@ hourlyRate = float(input("Enter the hourly rate: "))
 payment = hoursWorked * hourlyRate
 
 # Display the result
-print(f"The payment for {hoursWorked} hours worked at a rate of {hourlyRate} per hour is: {payment}")
+print(f"The payment for {hoursWorked} hours worked at a rate of {hourlyRate} per hour is: ${payment}")
