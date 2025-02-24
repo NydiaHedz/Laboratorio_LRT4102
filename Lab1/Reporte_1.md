@@ -470,7 +470,7 @@ if robot.explore():
 - Creates a 5x5 grid with obstacles.  
 - Attempts to find a path and prints the results.  
 
-### Exercise 7: Store Inventory Management
+### Problem 7: Store Inventory Management
 
 A store wants to manage its product inventory. Implement a Python system that allows:
 
