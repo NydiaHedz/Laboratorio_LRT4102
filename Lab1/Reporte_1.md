@@ -470,3 +470,98 @@ if robot.explore():
 - Creates a 5x5 grid with obstacles.  
 - Attempts to find a path and prints the results.  
 
+### Exercise 7: Store Inventory Management
+
+A store wants to manage its product inventory. Implement a Python system that allows:
+
+- Creating products, each with a name, price, and stock quantity.  
+- Updating the stock quantity when products are sold.  
+- Displaying product information, including its availability.  
+- Calculating the total inventory value using the formula: Total Value = Price * Stock Quantity
+
+#### Soution
+The implemented solution can be seen in: [View the code](./src/P7.py)
+
+This program simulates a basic inventory system. It allows managing products by tracking their name, price, and stock quantity. The system also includes functionality to handle sales, display product details, and calculate the total inventory value. 
+
+**1. Defining the Product Class**  
+
+The `MakeupProduct` class represents an individual product in the inventory. Each product has a name, a price per unit, and a quantity that indicates how many units are available. These attributes are initialized when creating a new product instance.  
+
+```python
+class MakeupProduct:
+    def __init__(self, name, price, quantity):
+        self.name = name
+        self.price = price
+        self.quantity = quantity
+```
+
+**2. Selling a Product**
+
+The `sell` method allows the sale of a product by reducing the stock. The amount sold is randomly chosen between one and the available stock to simulate real-world sales variation. If the stock reaches zero, the method prints a message indicating that the product is out of stock and no further sales can be made.  
+
+```python
+def sell(self):
+    if self.quantity > 0:
+        amount = random.randint(1, self.quantity)  
+        self.quantity -= amount
+        print(f"Sold {amount} units of {self.name}. Remaining stock: {self.quantity}")
+    else:
+        print(f"{self.name} is out of stock.")
+```
+
+**3. Displaying Product Information** 
+
+The `displayInfo` method provides an overview of a product's details, including its name, price, and stock level. It also determines whether the product is currently available or out of stock.  
+
+```python
+def displayInfo(self):
+    status = "Available" if self.quantity > 0 else "Out of stock"
+    print(f"Product: {self.name}, Price: ${self.price:.2f}, Stock: {self.quantity} ({status})")
+```
+
+**4. Calculating Inventory Value**
+
+The `inventoryValue` method calculates the total value of the product's stock using the formula: Total Value = Price * Stock Quantity
+
+This helps determine the overall worth of the inventory at any given moment.  
+
+```python
+def inventoryValue(self):
+    return self.price * self.quantity
+```
+
+**5. Example Usage**  
+
+To demonstrate the system, three makeup products are created with predefined prices and stock levels. These products represent different types of items available in the store.  
+
+```python
+foundation = MakeupProduct("Liquid Foundation", 25.99, 15)
+lipstick = MakeupProduct("Red Lipstick", 9.99, 30)
+eyeshadow = MakeupProduct("Eyeshadow Palette", 35.50, 10)
+```
+
+**6. Running the Simulation**
+
+The program first displays the initial inventory, then processes sales for each product, and finally updates the inventory to reflect the changes. The total value of the inventory is calculated after the sales have been made.  
+
+```python
+print("\nInitial Inventory:")
+foundation.displayInfo()
+lipstick.displayInfo()
+eyeshadow.displayInfo()
+
+print("\nSelling Products...")
+foundation.sell()
+lipstick.sell()
+eyeshadow.sell()
+
+print("\nUpdated Inventory:")
+foundation.displayInfo()
+lipstick.displayInfo()
+eyeshadow.displayInfo()
+
+totalValue = foundation.inventoryValue() + lipstick.inventoryValue() + eyeshadow.inventoryValue()
+print(f"\nTotal inventory value: ${totalValue:.2f}")
+```
+
