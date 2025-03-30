@@ -54,6 +54,11 @@ The system's operational output when running these commands should appear as sho
 
 ![System's operational output](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/media/lab2_basic.jpg)
 
+The diagram shown bellow illustrates a fundamental publisher-subscriber pattern with two primary components: a publisher node named /tableer_3337_1743369893729 and a subscriber node named /listener_3355_1743369897472. These nodes communicate through the /chatter topic, which acts as the intermediary message channel. The numerical suffixes in the node names (1743369893729 and 1743369897472) indicate these were launched with anonymous=True parameter, generating unique identifiers to prevent naming conflicts.
+
+The communication follows a unidirectional flow where the publisher node sends messages to the /chatter topic, which then distributes them to the subscriber node. This structure represents the canonical talker/listener example from ROS tutorials, typically using std_msgs/String messages.
+
+![RQT graph](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/media/lab2_basic_rqt.jpg)
 
 ### Conclusion
 
