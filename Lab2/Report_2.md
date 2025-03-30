@@ -65,3 +65,5 @@ The communication follows a unidirectional flow where the publisher node sends m
 This system demonstrates basic principles of node communication in ROS, showing a fundamental pattern for developing distributed robotic systems. The presented implementation serves as a foundation for more complex scenarios requiring information exchange between robotic system components.
 
 The used architecture allows easy extension to include multiple publishers or subscribers, more complex message processing, or hardware component integration. This example constitutes an essential starting point for developing more sophisticated robotic applications.
+
+## Medium Part
