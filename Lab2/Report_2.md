@@ -52,6 +52,7 @@ To run the nodes:
    ```
 The system's operational output when running these commands should appear as shown below:
 
+![System's operational output]([url completa de la imagen](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/media/lab2_basic.jpg))
 
 
 ### Conclusion
