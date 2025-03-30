@@ -50,6 +50,9 @@ To run the nodes:
    ```bash
    rosrun practicas_lab listener.py
    ```
+The system's operational output when running these commands should appear as shown below:
+
+
 
 ### Conclusion
 
