@@ -16,3 +16,43 @@ This lab explored the fundamentals of ROS (Robot Operating System) through three
    - Their performance was compared using plotting tools like **PlotJuggler**, evaluating precision, settling time, and oscillations.  
 
 This report details each stage, the obtained results, and conclusions on the behavior of the implemented systems. The code and generated plots are included as evidence of the work performed.  
+
+## Basic Part
+
+In this part two nodes were implemented in ROS (Robot Operating System): talker.py and listener.py. These nodes represent a fundamental example of inter-process communication using the publisher-subscriber paradigm, widely used in distributed robotic systems.
+
+### Functional Description
+
+#### Publisher Node (talker.py)
+The talker.py node generates and periodically publishes messages to a specific ROS topic. It initializes a ROS node named "talker" and creates a publisher for the "chatter" topic with String-type messages. The publication frequency is set to 10 Hz using ROS's Rate object.
+
+During execution, the node constructs messages combining "hello world" text with a timestamp obtained through rospy.get_time(). Each message is published to the designated topic while simultaneously being logged via rospy.loginfo(). The node includes exception handling to ensure clean termination upon receiving an interrupt signal.
+
+#### Subscriber Node (listener.py)
+The listener.py node consumes messages published to the "chatter" topic. After initializing as "listener", it subscribes to the mentioned topic, associating the callback function as the handler for incoming messages.
+
+The callback function processes each received message, logging both the node identifier and message content via rospy.loginfo(). The node remains active indefinitely through rospy.spin(), maintaining execution while waiting for new messages.
+
+#### Communication Architecture
+
+The node communication follows ROS's typical publisher-subscriber model. The talker node publishes messages to the "chatter" topic, while the listener node subscribes to the same topic to receive these messages. The ROS Master acts as intermediary, managing node registration and message distribution.
+
+To run the nodes:
+1. Start ROS core:
+   ```bash
+   roscore
+   ```
+2. Run the publisher node:
+   ```bash
+   rosrun practicas_lab talker.py
+   ```
+3. Run the subscriber node:
+   ```bash
+   rosrun practicas_lab listener.py
+   ```
+
+### Conclusion
+
+This system demonstrates basic principles of node communication in ROS, showing a fundamental pattern for developing distributed robotic systems. The presented implementation serves as a foundation for more complex scenarios requiring information exchange between robotic system components.
+
+The used architecture allows easy extension to include multiple publishers or subscribers, more complex message processing, or hardware component integration. This example constitutes an essential starting point for developing more sophisticated robotic applications.
