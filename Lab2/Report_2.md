@@ -620,3 +620,11 @@ roslaunch practicas_lab lab2_adv2.launch
 ![Controler PD](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/media/lab2_adv2.jpg)
 **Control PI**
 ![Controler PI](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/media/lab2_adv3.jpg)
+
+The images show graphs of the behavior of a turtle in TurtleSim using different control strategies. The P controller provides a simple response but has a steady-state error, meaning the system does not fully reach the desired value. The PD controller improves stability and response speed by reducing oscillations, but the derivative term introduces peaks in angular velocity. Meanwhile, the PI controller eliminates steady-state error thanks to the integral term, ensuring greater precision but potentially causing higher overshoot and initial oscillations. The P controller is the simplest but lacks accuracy, the PD controller balances stability and responsiveness, and the PI controller ensures long-term precision at the cost of possible oscillations. If the goal is precision in the final position, PI is the best choice, while PD is ideal for stability with minimal oscillations.
+
+### Conclusion
+
+The implementation and comparison of P, PD, and PI controllers for position control in Turtlesim demonstrate the trade-offs between accuracy, stability, and response speed in feedback control systems. The Proportional (P) controller offers a simple approach but exhibits a steady-state error, making it less precise for reaching the exact target position. The Proportional-Derivative (PD) controller improves stability and response speed by reducing oscillations, but the derivative term introduces peaks in angular velocity. On the other hand, the Proportional-Integral (PI) controller successfully eliminates steady-state error, achieving higher precision; however, it may introduce overshoot and initial oscillations due to the integral component.
+
+From the analysis, PI control is the best choice for applications requiring long-term precision, as it ensures the turtle reaches the exact desired position. However, for applications prioritizing stability with minimal oscillations, the PD controller is a more suitable option. The results highlight the importance of selecting the appropriate control strategy based on the desired performance characteristics of the system.
