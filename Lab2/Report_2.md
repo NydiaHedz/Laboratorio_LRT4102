@@ -315,3 +315,7 @@ The main technical lessons learned were:
 - How mathematical calculations translate to physical movements in simulation
 
 These implementations provide a solid foundation for more advanced robotics control systems, demonstrating fundamental principles that scale to real-world applications. The project particularly highlights how simple command patterns can produce complex geometric behaviors through careful timing and motion control.
+
+## Advanced Part 
+
+This part describes the implementation and comparison of Proportional (P), Proportional-Integral (PI), and Proportional-Integral-Derivative (PID) controllers for position control in Turtlesim. The goal is to analyze their performance in terms of accuracy, response time, and stability using PlotJuggler for visualization.
