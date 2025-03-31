@@ -320,7 +320,7 @@ These implementations provide a solid foundation for more advanced robotics cont
 
 This part describes the implementation and comparison of Proportional (P), Proportional-Integral (PI), and Proportional-Integral-Derivative (PID) controllers for position control in Turtlesim. The goal is to analyze their performance in terms of accuracy, response time, and stability using PlotJuggler for visualization.
 
-### Proportional Controller for Turtlesim  
+### Position control for turtlesim (P)
 
 This script implements a Proportional (P) controller for positioning a turtle in the ROS Turtlesim simulator. The code follows ROS conventions and demonstrates basic control theory implementation.  
 
@@ -410,5 +410,146 @@ To execute this package and activate keyboard control of the turtle in the Turtl
 roslaunch practicas_lab lab2_adv1.launch
 ```
 
+### Position control for turtlesim (PD)
+
+The code implements a controller for positioning a turtle in the ROS Turtlesim simulator. The code follows ROS conventions and demonstrates advanced control theory implementation with both position and orientation control.
+
+The complete code can be seen in [turtle_pdc.py](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/lab2_advanced/turtle_pdc.py).
+
+#### Functional Description
+
+The `MoveTurtlePDControl` class handles position and orientation control through a comprehensive PD control loop that manages both simultaneously:
+
+```python
+class MoveTurtlePDControl:
+    def __init__(self):
+        rospy.init_node('turtle_control_xyz')
+        self.pose_subscriber = rospy.Subscriber('/turtle1/pose', Pose, self.pose_callback)
+        self.velocity_publisher = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
+        self.rate = rospy.Rate(10)  # 10Hz control rate
+        self.current_x, self.current_y, self.current_theta = 0.0, 0.0, 0.0
+        self.last_error_x, self.last_error_y, self.last_error_theta = 0.0, 0.0, 0.0
+```
+
+#### Key Components
+
+1. **Pose Callback**: Continuously updates the turtle's current state
+```python
+def pose_callback(self, pose):
+    # Function executed each time the turtle position is updated
+    self.current_x = pose.x
+    self.current_y = pose.y
+    self.current_theta = pose.theta
+```
+
+2. **Control Logic**: Implements a two-phase PD control with dead zones
+```python
+def move_turtle_to_desired_position(self, desired_x, desired_y, desired_theta=None):
+    # Proportional and derivative constants (adjustable)
+    Kp_linear = 0.8     
+    Kd_linear = 0.5     
+    Kp_angular = 2.0    
+    Kd_angular = 0.8    
+    
+    # Thresholds to reduce oscillation
+    distance_threshold = 0.2
+    angle_threshold = radians(5)
+    
+    while not rospy.is_shutdown():
+        # Calculate position errors
+        error_x = desired_x - self.current_x
+        error_y = desired_y - self.current_y
+        
+        # Calculate distance and angle to target
+        distance = sqrt(error_x**2 + error_y**2)
+        target_angle = atan2(error_y, error_x)
+        
+        # Calculate heading error and normalize to [-π, π]
+        error_theta = target_angle - self.current_theta
+        while error_theta > pi:
+            error_theta -= 2*pi
+        while error_theta < -pi:
+            error_theta += 2*pi
+        
+        # Calculate derivative component for PD control
+        d_error_linear = distance - sqrt(self.last_error_x**2 + self.last_error_y**2)
+        d_error_theta = error_theta - self.last_error_theta
+        
+        # Save current errors for next iteration
+        self.last_error_x = error_x
+        self.last_error_y = error_y
+        self.last_error_theta = error_theta
+        
+        # First correct orientation, then move forward
+        if abs(error_theta) > angle_threshold:
+            # Rotation-only phase
+            twist_msg = Twist()
+            twist_msg.angular.z = Kp_angular * error_theta + Kd_angular * d_error_theta
+        else:
+            # Combined movement phase
+            twist_msg = Twist()
+            twist_msg.linear.x = Kp_linear * distance + Kd_linear * d_error_linear
+            twist_msg.angular.z = Kp_angular * error_theta + Kd_angular * d_error_theta
+        
+        # Publish velocity command
+        self.velocity_publisher.publish(twist_msg)
+```
+
+3. **User Interface**: Console-based input for target specification
+```python
+def get_desired_position_from_user(self):
+    print("Enter the desired position and orientation:")
+    x = float(input("X coordinate: "))
+    y = float(input("Y coordinate: "))
+    theta_input = input("Theta (in degrees, press Enter to automatically face target): ")
+    
+    if theta_input.strip():
+        theta = radians(float(theta_input))
+        return x, y, theta
+    else:
+        return x, y, None
+```
+
+#### Advanced Features
+
+1. **Dead Zone Implementation**: Prevents small oscillations near the target
+```python
+# Apply dead zone to prevent small oscillations
+if abs(twist_msg.angular.z) < min_angular_speed:
+    if twist_msg.angular.z > 0:
+        twist_msg.angular.z = min_angular_speed
+    else:
+        twist_msg.angular.z = -min_angular_speed
+```
+
+2. **Progressive Speed Reduction**: Slows down as it approaches the target
+```python
+if distance > distance_threshold:
+    twist_msg.linear.x = linear_speed
+    # Limit max speed
+    if twist_msg.linear.x > 1.5:
+        twist_msg.linear.x = 1.5
+else:
+    # As we get closer, reduce speed
+    twist_msg.linear.x = 0.5 * linear_speed
+```
+
+3. **Optional Target Orientation**: Can automatically face the target or use a specified orientation
+```python
+if desired_theta is None:
+    # Auto-orientation towards target
+    target_angle = atan2(error_y, error_x)
+else:
+    # Use specified orientation
+    final_theta_error = desired_theta - self.current_theta
+```
+#### Launch File Configuration and Execution  
+
+The launch file for this turtle teleoperation node is available in: [lab2_adv2.launch](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/launch/lab2_adv2.launch)
+
+To execute this package and activate keyboard control of the turtle in the Turtlesim environment, use the following command in your terminal:  
+
+```bash
+roslaunch practicas_lab lab2_adv2.launch
 
 
