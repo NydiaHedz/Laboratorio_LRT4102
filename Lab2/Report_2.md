@@ -319,3 +319,96 @@ These implementations provide a solid foundation for more advanced robotics cont
 ## Advanced Part 
 
 This part describes the implementation and comparison of Proportional (P), Proportional-Integral (PI), and Proportional-Integral-Derivative (PID) controllers for position control in Turtlesim. The goal is to analyze their performance in terms of accuracy, response time, and stability using PlotJuggler for visualization.
+
+### Proportional Controller for Turtlesim  
+
+This script implements a Proportional (P) controller for positioning a turtle in the ROS Turtlesim simulator. The code follows ROS conventions and demonstrates basic control theory implementation.  
+
+The complete code can be seen in: [turtle_pc.py](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/lab2_advanced/turtle_pc.py)
+
+#### Functional Description  
+
+The `TurtleProportionalController` class handles both position and orientation control through separate control loops:  
+
+```python
+class TurtleProportionalController:
+    def __init__(self):
+        rospy.init_node('turtle_p_controller')
+        self.pose_sub = rospy.Subscriber('/turtle1/pose', Pose, self.pose_cb)
+        self.vel_pub = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
+        self.rate = rospy.Rate(10)  # 10Hz control rate
+        self.x, self.y, self.theta = 0.0, 0.0, 0.0
+        self.got_pose = False
+```
+
+#### Key Components  
+
+1. **Pose Callback**: Continuously updates the turtle's current state  
+```python
+def pose_cb(self, msg):
+    self.x = msg.x
+    self.y = msg.y
+    self.theta = msg.theta
+    self.got_pose = True
+```
+
+2. **Control Logic**: Implements two-stage P control  
+```python
+def move_to_goal(self, goal_x, goal_y, goal_theta):
+    Kp_lin = 0.8  # Linear gain
+    Kp_ang = 1.2  # Angular gain
+    
+    # Position control phase
+    while not rospy.is_shutdown():
+        err_x = goal_x - self.x
+        err_y = goal_y - self.y
+        distance = sqrt(err_x**2 + err_y**2)
+        
+        if distance < 0.05:  # 5cm tolerance
+            break
+            
+        cmd = Twist()
+        cmd.linear.x = Kp_lin * err_x
+        cmd.linear.y = Kp_lin * err_y
+        self.vel_pub.publish(cmd)
+        self.rate.sleep()
+    
+    # Orientation control phase
+    while not rospy.is_shutdown():
+        err_theta = (goal_theta - self.theta + pi) % (2*pi) - pi
+        
+        if abs(err_theta) < 0.03:  # ~1.7° tolerance
+            break
+            
+        cmd = Twist()
+        cmd.angular.z = Kp_ang * err_theta
+        self.vel_pub.publish(cmd)
+        self.rate.sleep()
+```
+
+3. **User Interface**: Simple console input for target specification  
+```python
+def get_goal_from_user(self):
+    print("\n=== Enter Target Pose ===")
+    try:
+        x = float(input("X coordinate (1-10): "))
+        y = float(input("Y coordinate (1-10): "))
+        theta = float(input("Orientation (radians): "))
+        return x, y, theta
+    except ValueError:
+        rospy.logwarn("Invalid input! Please enter numbers.")
+        return None
+```
+
+#### Launch File Configuration and Execution  
+
+The launch file for this turtle teleoperation node is available in: [lab2_adv1.launch](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/launch/lab2_adv1.launch)
+
+To execute this package and activate keyboard control of the turtle in the Turtlesim environment, use the following command in your terminal:  
+
+```bash
+roslaunch practicas_lab lab2_adv1.launch
+```
+
+
+
