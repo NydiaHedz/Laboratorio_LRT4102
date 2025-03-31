@@ -611,6 +611,7 @@ To execute this package and activate keyboard control of the turtle in the Turtl
 
 ```bash
 roslaunch practicas_lab lab2_adv2.launch
+```
 
 ### Comparison
 
