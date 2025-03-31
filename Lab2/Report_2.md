@@ -67,3 +67,144 @@ This system demonstrates basic principles of node communication in ROS, showing 
 The used architecture allows easy extension to include multiple publishers or subscribers, more complex message processing, or hardware component integration. This example constitutes an essential starting point for developing more sophisticated robotic applications.
 
 ## Medium Part
+
+The goal of thispart was to develop three progressively sophisticated control systems for the ROS Turtlesim simulator:
+
+1. A basic keyboard teleoperation system 
+2. An enhanced movement and rotation control system 
+3. An autonomous geometric shape drawing system 
+
+### Basic Keyboard Control
+
+The complete code can be address in [teleop.py](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/lab2_medium/teleop.py) 
+
+This initial version provides fundamental movement control along the X and Y axes. The implementation uses a non-blocking keyboard input method to capture single key presses without requiring Enter. The control scheme is minimalist but functional:
+- 'x' moves forward along X-axis (linear.x = 2.0)
+- 'y' moves forward along Y-axis (linear.y = 2.0) 
+- 's' stops all movement
+- 'q' quits the program
+
+#### Functional Description
+
+The keyboard control system begins with terminal configuration for real-time input. The critical component is the `get_key()` function which handles low-level terminal settings:
+
+```python
+def get_key():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)  # Bypass line buffering
+        key = sys.stdin.read(1)  # Single character read
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)  # Restore settings
+    return key
+```
+
+This function temporarily switches the terminal to raw mode using `tty.setraw()`, reads exactly one keypress with `sys.stdin.read(1)`, then restores the original terminal configuration. The `finally` block ensures proper cleanup even if errors occur.
+
+For ROS communication, the script establishes a publisher node:
+
+```python
+pub = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
+```
+
+This creates a channel to send `Twist` messages to the turtle's velocity topic. The `queue_size=10` parameter provides buffer space for message handling during high-frequency commands.
+
+The movement logic translates keypresses into motion commands through a series of conditional statements:
+
+```python
+if key == 'x':
+    msg.linear.x = 2.0  # Forward motion
+elif key == 'y':
+    msg.linear.y = 2.0  # Lateral motion
+elif key == 's':
+    msg.linear.x = msg.linear.y = 0.0  # Full stop
+```
+
+Each condition modifies different components of the `Twist` message. The X and Y axes are controlled independently, allowing diagonal movement when both are active simultaneously.
+
+The main control loop ties everything together:
+
+```python
+while not rospy.is_shutdown():
+    key = get_key()
+    msg = Twist()
+    # Key handling logic here
+    pub.publish(msg)
+    if key == 'q':
+        break
+```
+
+This continuous loop reads inputs, prepares movement commands, and publishes them at each iteration. The `rospy.is_shutdown()` check ensures proper termination when ROS signals closure, while the 'q' key provides manual exit capability.
+
+**Launch File Configuration and Execution**  
+
+The launch file for this turtle teleoperation node is available in: [tortuga_teleop.launch](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/launch/tortuga_teleop.launch)
+
+To execute this package and activate keyboard control of the turtle in the Turtlesim environment, use the following command in your terminal:  
+
+```bash
+roslaunch practicas_lab tortuga_teleop.launch
+```  
+
+This command automatically performs the following steps:  
+1. Starts the Turtlesim node (`turtlesim_node`)  
+2. Executes the `teleop.py` script containing the control logic  
+3. Establishes the necessary communication between nodes  
+
+The system will be ready to receive keyboard commands following the predefined control scheme (keys **x**, **y**, **s** for movement and **q** to exit). The interface will display usage instructions in the terminal immediately after initialization.  
+
+**teleop2.py - Enhanced Movement System**
+
+The second iteration introduces comprehensive control using intuitive WASD keys for movement and dedicated keys for rotation:
+- WASD keys for omnidirectional movement
+- 'j' and 'l' for left/right rotation
+- Spacebar for emergency stop
+- 'q' to quit
+
+Notable improvements include:
+- Bidirectional control (positive/negative velocities)
+- Simultaneous linear and angular motion capabilities
+- Better velocity tuning (2.0 m/s linear, 1.5 rad/s angular)
+- More intuitive gaming-style controls
+
+The implementation required careful balancing of velocity values to ensure responsive yet controllable movement. Special attention was given to the angular velocity to enable smooth rotations.
+
+**teleop3.py - Autonomous Shape Drawing**
+
+This advanced version automatically draws geometric shapes by:
+1. Drawing a 2m square with turtle1
+2. Killing turtle1 via the /kill service
+3. Spawning turtle2 via the /spawn service
+4. Drawing a 2m equilateral triangle with turtle2
+
+Core components include:
+- Precise movement timing using distance/speed calculations
+- Exact angle rotations (π/2 for square, 2π/3 for triangle)
+- Service handling for turtle management
+- Position resetting between shapes
+
+The most significant challenge was achieving precise angular control. The solution involved:
+```python
+duration = abs(angle) / speed  # Calculate exact turn duration
+while rospy.Time.now().to_sec() - start_time < duration:
+    self.cmd_pub.publish(cmd)
+    rospy.sleep(0.1)
+```
+
+### Conclusion
+
+This project successfully implemented three distinct control paradigms for Turtlesim, each demonstrating important ROS concepts. Key achievements include:
+
+1. Effective keyboard teleoperation implementation
+2. Comprehensive movement and rotation control
+3. Precise autonomous shape drawing through mathematical motion control
+4. Proper integration of ROS services for turtle management
+
+The main technical lessons learned were:
+- The critical importance of precise timing in autonomous operations
+- The need for careful velocity tuning for different movement types
+- The value of service-based turtle management for complex behaviors
+- How mathematical calculations translate to physical movements in simulation
+
+These implementations provide a solid foundation for more advanced robotics control systems, demonstrating fundamental principles that scale to real-world applications. The project particularly highlights how simple command patterns can produce complex geometric behaviors through careful timing and motion control.
