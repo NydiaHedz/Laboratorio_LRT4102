@@ -510,8 +510,6 @@ def get_desired_position_from_user(self):
         return x, y, None
 ```
 
-#### Advanced Features
-
 1. **Dead Zone Implementation**: Prevents small oscillations near the target
 ```python
 # Apply dead zone to prevent small oscillations
@@ -552,4 +550,65 @@ To execute this package and activate keyboard control of the turtle in the Turtl
 ```bash
 roslaunch practicas_lab lab2_adv2.launch
 
+### Position control for turtlesim (PID)
+
+The code implements a complete PID controller for position and orientation control of a turtle in ROS Turtlesim. The controller features interactive target input and handles both Cartesian position and angular orientation simultaneously.
+
+The complete code can be adressed in: 
+
+#### Functional Description
+
+The `MoveTurtlePIDControl` class provides:
+
+1. **Continuous pose tracking** via ROS subscriber
+2. **PID control loop** running at 10Hz
+3. **Interactive target input** through console
+4. **Automatic coordinate transformation** from global to turtle frame
+
+#### Key Components
+
+1. **Control Loop Core**:
+```python
+# PID calculations for each axis
+vel_x = Kp_x*error_x + Ki_x*integral_x + Kd_x*derivative_x
+vel_θ = Kp_θ*error_θ + Ki_θ*integral_θ + Kd_θ*derivative_θ
+
+# Transform to local frame
+twist_msg.linear.x = vel_x * cos(θ) + vel_y * sin(θ)
+twist_msg.angular.z = vel_θ
+```
+
+2. **Essential Functions**:
+```python
+def pose_callback(self, pose):
+    """Updates current turtle pose"""
+    self.current_x = pose.x
+    self.current_y = pose.y
+    self.current_θ = pose.θ
+
+def normalize_angle(self, angle):
+    """Keeps angles in [-π,π] range"""
+    while angle > pi: angle -= 2*pi
+    while angle < -pi: angle += 2*pi
+    return angle
+```
+
+3. **User Interaction**:
+```python
+def get_target_from_user(self):
+    """Gets target position/orientation from console"""
+    x = float(input("Target X: "))
+    y = float(input("Target Y: "))
+    θ = input("θ (radians, Enter for auto): ")
+    return x, y, θ if θ else None
+```
+
+#### Launch File Configuration and Execution  
+
+The launch file for this turtle teleoperation node is available in: [lab2_adv3.launch](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/launch/lab2_adv3.launch)
+
+To execute this package and activate keyboard control of the turtle in the Turtlesim environment, use the following command in your terminal:  
+
+```bash
+roslaunch practicas_lab lab2_adv2.launch
 
