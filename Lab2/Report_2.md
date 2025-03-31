@@ -231,27 +231,73 @@ The expected output is:
   - ` ` (space): Stop.  
   - `q`: Quit.  
 
-**teleop3.py - Autonomous Shape Drawing**
+#### Autonomous Shape Drawing
+
+The complete code is available in [teleop3.py](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/lab2_medium/teleop3.py) 
 
 This advanced version automatically draws geometric shapes by:
-1. Drawing a 2m square with turtle1
+1. Drawing a square with turtle1
 2. Killing turtle1 via the /kill service
 3. Spawning turtle2 via the /spawn service
-4. Drawing a 2m equilateral triangle with turtle2
+4. Drawing a equilateral triangle with turtle2
 
-Core components include:
-- Precise movement timing using distance/speed calculations
-- Exact angle rotations (π/2 for square, 2π/3 for triangle)
-- Service handling for turtle management
-- Position resetting between shapes
+#### Key Functionalities  
 
-The most significant challenge was achieving precise angular control. The solution involved:
+The `TurtleArtist` class initializes ROS services for turtle control:  
 ```python
-duration = abs(angle) / speed  # Calculate exact turn duration
-while rospy.Time.now().to_sec() - start_time < duration:
-    self.cmd_pub.publish(cmd)
-    rospy.sleep(0.1)
+self.kill = rospy.ServiceProxy('/kill', Kill)
+self.spawn = rospy.ServiceProxy('/spawn', Spawn)
+self.teleport_turtle1 = rospy.ServiceProxy('/turtle1/teleport_absolute', TeleportAbsolute)
+```  
+  Publishes linear velocity (`Twist.linear.x`) for a calculated duration (`distance / speed`).  
+  ```python
+  cmd.linear.x = speed
+  duration = distance / speed
+  ```  
+  Publishes angular velocity (`Twist.angular.z`) for `abs(angle) / speed` seconds.  
+  ```python
+  cmd.angular.z = speed if angle > 0 else -speed
+  ```  
+
+The shape drawing methods are:
+
+- Square: 4 iterations of `move_forward(2.0)` + `turn(math.pi/2)`.  
+- Triangle: 3 iterations of `move_forward(2.0)` + `turn(2π/3)`.  
+
+The turtle lifecycle management is performed with.
+
+```python
+self.kill('turtle1')                     # Remove turtle1
+self.spawn(5.54, 5.54, 0, 'turtle2')     # Create turtle2
+self.cmd_pub = rospy.Publisher('/turtle2/cmd_vel', Twist, queue_size=10)  # Update publisher
+```  
+
+#### Execution Workflow  
+
+1. **Initialize**:  
+   - Start ROS node (`turtle_shape_drawer`).  
+   - Wait for required services (`/kill`, `/spawn`, `/teleport_absolute`).  
+2. **Draw Square**:  
+   - Teleport `turtle1` to center.  
+   - Execute square-drawing loop.  
+3. **Switch Turtles**:  
+   - Kill `turtle1`, spawn `turtle2` at the same position.  
+4. **Draw Triangle**:  
+   - Repeat motion primitives with 120° turns.  
+
+#### Launch File Configuration and Execution  
+
+The launch file for this turtle teleoperation node is available in: [tortuga_teleop3.launch](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/launch/tortuga_teleop3.launch)
+
+To execute this package and activate keyboard control of the turtle in the Turtlesim environment, use the following command in your terminal:  
+
+```bash
+roslaunch practicas_lab tortuga_teleop3.launch
 ```
+
+An example of the result can be seen bellow
+
+![Tutle draw](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/media/lab2_medium.jpg)
 
 ### Conclusion
 
