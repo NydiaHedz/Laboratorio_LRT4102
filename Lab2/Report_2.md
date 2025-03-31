@@ -137,7 +137,7 @@ while not rospy.is_shutdown():
 
 This continuous loop reads inputs, prepares movement commands, and publishes them at each iteration. The `rospy.is_shutdown()` check ensures proper termination when ROS signals closure, while the 'q' key provides manual exit capability.
 
-**Launch File Configuration and Execution**  
+#### Launch File Configuration and Execution  
 
 The launch file for this turtle teleoperation node is available in: [tortuga_teleop.launch](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/launch/tortuga_teleop.launch)
 
@@ -154,21 +154,82 @@ This command automatically performs the following steps:
 
 The system will be ready to receive keyboard commands following the predefined control scheme (keys **x**, **y**, **s** for movement and **q** to exit). The interface will display usage instructions in the terminal immediately after initialization.  
 
-**teleop2.py - Enhanced Movement System**
+### Enhanced Movement System
 
-The second iteration introduces comprehensive control using intuitive WASD keys for movement and dedicated keys for rotation:
-- WASD keys for omnidirectional movement
-- 'j' and 'l' for left/right rotation
-- Spacebar for emergency stop
-- 'q' to quit
+The complete code is available in [teleop2.py](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/lab2_medium/teleop2.py)
 
-Notable improvements include:
-- Bidirectional control (positive/negative velocities)
-- Simultaneous linear and angular motion capabilities
-- Better velocity tuning (2.0 m/s linear, 1.5 rad/s angular)
-- More intuitive gaming-style controls
+This upgraded version introduces omnidirectional movement and rotation control for the Turtlesim robot, using an intuitive `WASD`-style keyboard scheme. The implementation retains non-blocking input via `termios` and expands functionality with:  
+- Linear motion: Forward (`w`), backward (`s`), left (`a`), right (`d`)  
+- Angular motion: Counter-clockwise (`j`), clockwise (`l`)  
+- Stop: Spacebar zeroes all velocities  
+- Exit: `q` terminates the program  
 
-The implementation required careful balancing of velocity values to ensure responsive yet controllable movement. Special attention was given to the angular velocity to enable smooth rotations.
+#### Functional Description  
+
+The `get_key()` function remains unchanged, ensuring real-time keypress detection without requiring Enter:  
+
+```python
+def get_key():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        key = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return key
+```  
+The node (`turtle_keyboard_control`) publishes `Twist` messages to `/turtle1/cmd_vel`:  
+```python
+pub = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
+```  
+Keypresses map to specific `Twist` message components:  
+- **Linear motion**:  
+  ```python
+  if key == 'w':
+      msg.linear.x = 2.0   # Forward (X-axis)
+  elif key == 's':
+      msg.linear.x = -2.0  # Backward
+  elif key == 'a':
+      msg.linear.y = 2.0   # Left (Y-axis)
+  elif key == 'd':
+      msg.linear.y = -2.0  # Right
+  ```  
+Angular motion is performed with:  
+  ```python
+  elif key == 'j':
+      msg.angular.z = 1.5   # Rotate left (positive Z)
+  elif key == 'l':
+      msg.angular.z = -1.5  # Rotate right
+  ```  
+
+The script prints clear instructions upon launch:  
+```python
+print("Control the turtle with keys:")
+print("  w -> Forward")
+print("  s -> Backward")
+# ... (additional keybindings)
+```  
+
+#### Launch File Configuration and Execution  
+
+The launch file for this turtle teleoperation node is available in: [tortuga_teleop2.launch](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/src/launch/tortuga_teleop2.launch)
+
+To execute this package and activate keyboard control of the turtle in the Turtlesim environment, use the following command in your terminal:  
+
+```bash
+roslaunch practicas_lab tortuga_teleop2.launch
+```
+
+The expected output is:  
+- Turtlesim window spawns.  
+- Terminal displays keybindings.  
+- Robot responds to:  
+  - `w`/`s`: Move forward/backward.  
+  - `a`/`d`: Strafe left/right.  
+  - `j`/`l`: Rotate in place.  
+  - ` ` (space): Stop.  
+  - `q`: Quit.  
 
 **teleop3.py - Autonomous Shape Drawing**
 
