@@ -614,7 +614,9 @@ roslaunch practicas_lab lab2_adv2.launch
 ```
 
 ### Comparison
-
+**Control P**
 ![Controler P](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/media/lab2_adv1.jpg)
+**Control PD**
 ![Controler PD](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/media/lab2_adv2.jpg)
+**Control PI**
 ![Controler PI](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab2/media/lab2_adv3.jpg)
