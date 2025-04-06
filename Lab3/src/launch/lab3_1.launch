@@ -1,0 +1,10 @@
+<launch>
+    <!-- Turtlesim Node -->
+    <node pkg="turtlesim" type="turtlesim_node" name="turtlesim"/>
+    
+    <!-- Turtle Spawner Node -->
+    <node pkg="practicas_lab" 
+          type="turtle_spawn_goal.py" 
+          name="turtle_goal_spawner" 
+          output="screen"/>
+</launch>
