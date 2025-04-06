@@ -80,7 +80,7 @@ spawn(x_new, y_new, math.radians(ang_new), 'turtle1')  # Creates new turtle
 
 # **TurtleBot Proportional Controller Report**  
 
-The `turtle_controller_spawn.py` script implements a ROS-based proportional controller for navigating a simulated turtle robot to user-specified positions in the turtlesim environment. Unlike the spawner version that teleports the turtle, this solution employs closed-loop control to achieve smooth, physics-based movement while continuously displaying real-time navigation metrics.
+The [`turtle_controller_spawn.py`](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab3/src/turtle_controller_spawn.py) script implements a ROS-based proportional controller for navigating a simulated turtle robot to user-specified positions in the turtlesim environment. Unlike the spawner version that teleports the turtle, this solution employs closed-loop control to achieve smooth, physics-based movement while continuously displaying real-time navigation metrics.
 
 ## **System Architecture**  
 The controller operates through three coordinated components:
