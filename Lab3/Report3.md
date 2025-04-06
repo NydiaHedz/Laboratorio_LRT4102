@@ -135,3 +135,11 @@ roslaunch practicas_lab lab3_2.launch
 This [launch file](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab3/src/launch/lab3_2.launch) simultaneously starts:
 - The turtlesim simulation node
 - The navigation controller (turtle_controller_spawn.py)
+
+## Conclusion  
+
+This lab practice successfully implemented two navigation approaches for turtlebot control in ROS, combining Euclidean geometry fundamentals with practical robotics. The goal spawner solution enabled instant positioning with navigation calculations, while the proportional controller achieved smooth, controlled movement through closed-loop feedback.  
+
+Both systems demonstrated core robotics principles, from pose monitoring to user interaction and real-time control. The proportional controller proved particularly effective, using simple P-control to separate position and orientation adjustments while providing continuous feedback.  
+
+The project highlights how basic geometric and control concepts translate directly to functional robotic systems. Future work could expand these foundations with more advanced controllers, multi-robot scenarios, or dynamic obstacle handling, building on the core navigation principles established here.
