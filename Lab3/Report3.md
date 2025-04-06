@@ -1,4 +1,4 @@
-# Laboratorio 3 
+# Lab 3 
 
 ## Overview  
 
@@ -21,7 +21,7 @@ The absolute target angle using the 2-argument arctangent:
 
 # TurtleBot Goal Spawner 
 
-The `turtle_goal_spawner.py` script implements a ROS node that provides interactive control over a simulated turtle robot in the turtlesim environment. The system allows users to teleport the turtle to specified positions while calculating key navigation metrics. This report describes the functionality, implementation, and behavior of this system.
+The [`turtle_goal_spawner.py`](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab3/src/turtle_spawn_goal.py) script implements a ROS node that provides interactive control over a simulated turtle robot in the turtlesim environment. The system allows users to teleport the turtle to specified positions while calculating key navigation metrics. This report describes the functionality, implementation, and behavior of this system.
 
 ## Core Functionality  
 The system operates through three main functions:  
@@ -62,21 +62,14 @@ kill('turtle1')  # Terminates current turtle
 spawn(x_new, y_new, math.radians(ang_new), 'turtle1')  # Creates new turtle
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### Execution
+The system is launched using:
+```bash
+roslaunch practicas_lab lab3_1.launch
+```
+This [launch file](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab3/src/launch/lab3_1.launch) simultaneously starts:
+- The turtlesim simulation node
+- The goal navigation controller (turtle_goal_spawner.py)
 
 # **TurtleBot Proportional Controller Report**  
 
@@ -133,3 +126,12 @@ Users receive continuous updates during movement:
 ```python
 print("\rDTG: %.2f m | ATG: %.2f°" % (distance, math.degrees(angle_error)), end="")
 ```
+
+### Execution
+The system is launched using:
+```bash
+roslaunch practicas_lab lab3_2.launch
+```
+This [launch file](https://github.com/NydiaHedz/Laboratorio_LRT4102/blob/main/Lab3/src/launch/lab3_2.launch) simultaneously starts:
+- The turtlesim simulation node
+- The navigation controller (turtle_controller_spawn.py)
